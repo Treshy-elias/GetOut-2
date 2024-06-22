@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Out if you can</title>
+    <script>
+        function openNewTabs() {
+            for (let i = 0; i < 4; i++) {
+                window.open('index.html', '_blank');
+            }
+        }
+
+        function redirectToAds() {
+            if (document.hidden === false) {
+                window.location.href = 'ads.html';
+            }
+        }
+
+        document.addEventListener('visibilitychange', redirectToAds);
+        window.onload = openNewTabs;
+    </script>
+</head>
+<body>
+    <h1>If your point get to 200, i can let you out</h1>
+    <p>Don't blame me. I didn't force you to click</p>
+</body>
+</html>
