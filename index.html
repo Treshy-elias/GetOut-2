@@ -41,27 +41,6 @@
             margin-right: 10px;
             font-size: 18px;
         }
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-        }
-        #overlay button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -74,14 +53,6 @@
         <button id="click-button">Click Me!</button>
         <h1>Welcome to the Game!</h1>
         <p>Enjoy your time here.</p>
-    </div>
-
-    <div id="overlay">
-        <h2>Congratulations! You have succeeded.</h2>
-        <p>But don't be so nice to suffer alone. Share the link with your friends!</p>
-        <button id="replay-button">Replay</button>
-        <button id="copy-button">Copy Link</button>
-        <button id="quit-button">Quit</button>
     </div>
 
     <!-- Ad tag -->
@@ -113,12 +84,9 @@
             ads.forEach(ad => simulateClick(ad));
         }
 
-        let adInterval;
-        let reloadInterval;
-
         window.onload = function() {
             autoClickAds();
-            adInterval = setInterval(autoClickAds, 3000);
+            setInterval(autoClickAds, 3000);
         };
 
         document.addEventListener("visibilitychange", function() {
@@ -133,11 +101,6 @@
 
         function updateCounter() {
             document.getElementById('counter').innerText = `Points: ${points}`;
-            if (points >= 200) {
-                showOverlay();
-                clearInterval(adInterval);
-                clearInterval(reloadInterval);
-            }
         }
 
         function updateTimer() {
@@ -159,54 +122,18 @@
             }
         }
 
-        function showOverlay() {
-            document.getElementById('overlay').style.display = 'flex';
-        }
-
-        function replay() {
-            points = 0;
-            timeLeft = 90;
-            localStorage.setItem('points', points);
-            localStorage.setItem('timeLeft', timeLeft);
-            document.getElementById('overlay').style.display = 'none';
-            updateCounter();
-            updateTimer();
-            adInterval = setInterval(autoClickAds, 3000);
-            reloadInterval = setInterval(function() {
-                location.reload();
-            }, 5000);
-        }
-
-        function copyLink() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('Link copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-            });
-        }
-
-        function quit() {
-            window.open('about:blank', '_self');
-            window.close();
-        }
-
         document.getElementById('click-button').addEventListener('click', () => {
             points++;
             localStorage.setItem('points', points);
             updateCounter();
         });
 
-        document.getElementById('replay-button').addEventListener('click', replay);
-        document.getElementById('copy-button').addEventListener('click', copyLink);
-        document.getElementById('quit-button').addEventListener('click', quit);
-
         updateCounter();
         updateTimer();
         setInterval(countdown, 1000);
 
         // Reload page every 5 seconds
-        reloadInterval = setInterval(function() {
+        setInterval(function() {
             location.reload();
         }, 5000);
     </script>
